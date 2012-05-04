@@ -5,6 +5,7 @@
 #Released under GNU GPL 2.0
 #Please keep credit intact if you plan on using the script elsewhere.
 #v1.0 - Initial Release
+#v1.1 - Added gapps option
 
 PATH="$PATH:$PWD/tools"
 export PATH
@@ -48,7 +49,8 @@ pb () {
 		clear
 		echo " "
 		echo "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
-		sleep 2
+		sleep 3
+		clear
 	fi
 }
 
@@ -91,7 +93,71 @@ ab () {
 		clear
 		echo " "
 		echo "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
-		sleep 2
+		sleep 3
+		clear
+	fi
+}
+
+gp () {
+	GAPPS="gapps-to-modify/*.zip"
+	if [ -e $GAPPS ] ; then
+		mkdir tmp
+		unzip $GAPPS -d tmp
+		cd tmp
+		
+		INIT=META-INF/com/google/android/updater-script
+		sed -i 's,/system,/system1,g' $INIT
+		
+			if [ -e *-optional.sh ] ; then
+				INIT=install-optional.sh
+				sed -i 's,/system,/system1,g' $INIT
+			else
+				echo "\e[1;31minstall-optional.sh not found, skipping\e[0m"
+				sleep 2
+			fi
+
+		zip -r gapps_DualbootSD_primary_${DATE}.zip *	
+		mv gapps_DualbootSD_primary_${DATE}.zip ../Primary-Mod/gapps_DualbootSD_primary_${DATE}.zip
+		cd ..
+		rm -r tmp			
+	else
+		clear
+		echo " "
+		echo "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
+		sleep 3
+		clear
+	fi
+}
+
+ga () {
+	GAPPS="gapps-to-modify/*.zip"
+	if [ -e $GAPPS ] ; then
+		mkdir tmp
+		unzip $GAPPS -d tmp
+		cd tmp
+		
+		INIT=META-INF/com/google/android/updater-script
+		sed -i 's,/system,/system2,g' $INIT
+		
+			if [ -e *-optional.sh ] ; then
+				INIT=install-optional.sh
+				sed -i 's,/system,/system2,g' $INIT
+			else
+				echo "\e[1;31minstall-optional.sh not found, skipping\e[0m"
+				sleep 2
+			fi
+
+		zip -r gapps_DualbootSD_alternate_${DATE}.zip *	
+		mv gapps_DualbootSD_alternate_${DATE}.zip ../Primary-Mod/gapps_DualbootSD_alternate_${DATE}.zip
+		cd ..
+		rm -r tmp
+		rm -r /data/tmp			
+	else
+		clear
+		echo " "
+		echo "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
+		sleep 3
+		clear
 	fi
 }
 
@@ -109,10 +175,12 @@ co () {
 		echoSleep() { echo "."; sleep 1;}
 		echo "\e[1;31mClearing out recent mods\e[0m"
 		echoSleep; echoSleep; echoSleep; echoSleep; echoSleep
-		rm -rf rom-to-modify
-		rm -rf Primary-Mod
-		rm -rf Alternate-Mod
+		rm -r rom-to-modify
+		rm -r gapps-to-modify
+		rm -r Primary-Mod
+		rm -r Alternate-Mod
 		mkdir rom-to-modify
+		mkdir gapps-to-modify
 		mkdir Primary-Mod
 		mkdir Alternate-Mod
 	fi
@@ -127,8 +195,10 @@ restart () {
 	echo " "
 	echo "  0    Prep for DualbootSD Primary Boot"
 	echo "  1    Prep for DualbootSD Alternate Boot"
-	echo "  2    Clear out recent mods"
-	echo "  3    Quit"
+	echo "  2    Prep Gapps for DualbootSD Primary Boot"
+	echo "  3    Prep Gapps for DualbootSD Alternate Boot"
+	echo "  4    Clear out recent mods"
+	echo "  5    Quit"
 	echo " "
 	echo "**************************************************************************"
 	echo 
@@ -138,8 +208,10 @@ restart () {
 	case "$ANSWER" in
 		 0)   pb ;;
 		 1)   ab ;;
-		 2)   co ;;
-		 3) quit ;;
+		 2)   gp ;;
+		 3)   ga ;;
+		 4)   co ;;
+		 5) quit ;;
 		 *)
 			echo "Unknown command: '$ANSWER'"
 		;;
