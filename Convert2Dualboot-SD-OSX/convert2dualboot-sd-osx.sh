@@ -1,8 +1,8 @@
 #!/bin/sh
 
-#Convert2SD-Dualboot by Racks11479
-#I used Apk Manager 4.0 (C) 2010 by Daneshm90 as a base.
-#Released under GPL 2.0
+#Convert2Dualboot-SD OSX by Racks11479
+#I used Apk Manager 4.0 by Daneshm90 as a base.
+#Released under GNU GPL 2.0
 #Please keep credit intact if you plan on using the script elsewhere.
 #v1.0 - Initial Release
 
@@ -45,8 +45,10 @@ pb () {
 		cd ..
 		rm -r tmp
 	else
+		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		echo "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		sleep 2
 	fi
 }
 
@@ -86,27 +88,47 @@ ab () {
 		cd ..
 		rm -r tmp
 	else
+		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		echo "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		sleep 2
 	fi
 }
 
 quit () {
+		clear
 		echo " "
-		echo -e "\e[1;34mThank you for using Convert2Dualboot-SD!\e[0m"
+		echo "\e[1;34mThank you for using Convert2Dualboot-SD!\e[0m"
 		echo " "
 	exit 0
 }
 
+co () {
+	if [ " " ] ; then
+		clear
+		echoSleep() { echo "."; sleep 1;}
+		echo "\e[1;31mClearing out recent mods\e[0m"
+		echoSleep; echoSleep; echoSleep; echoSleep; echoSleep
+		rm -rf rom-to-modify
+		rm -rf Primary-Mod
+		rm -rf Alternate-Mod
+		mkdir rom-to-modify
+		mkdir Primary-Mod
+		mkdir Alternate-Mod
+	fi
+	clear
+}
+
 restart () {
 	echo 
-	echo "********************* Convert2Dualboot-SD for Linux **********************"
+	echo "********************* Convert2Dualboot-SD for OSX ************************"
 	echo " "
-	echo -e "\e[1;32m--A tool to modify standard flashable ROM zips for Racks11479 DualbootSD--\e[0m"
+	echo "\e[1;32m--A tool to modify standard flashable ROM zips for Racks11479 DualbootSD--\e[0m"
 	echo " "
 	echo "  0    Prep for DualbootSD Primary Boot"
 	echo "  1    Prep for DualbootSD Alternate Boot"
-	echo "  2    Quit"
+	echo "  2    Clear out recent mods"
+	echo "  3    Quit"
 	echo " "
 	echo "**************************************************************************"
 	echo 
@@ -116,7 +138,8 @@ restart () {
 	case "$ANSWER" in
 		 0)   pb ;;
 		 1)   ab ;;
-		 2) quit ;;
+		 2)   co ;;
+		 3) quit ;;
 		 *)
 			echo "Unknown command: '$ANSWER'"
 		;;
@@ -124,18 +147,8 @@ restart () {
 }
 
 clear
-printf "%s" "Do you want to clean out all your current projects (y/N)? "
-read ROM
-if [ "x$ROM" = "xy" ] || [ "x$ROM" = "xY" ] ; then
-	rm -rf rom-to-modify
-	rm -rf Primary-Mod
-	rm -rf Alternate-Mod
-	mkdir rom-to-modify
-	mkdir Primary-Mod
-	mkdir Alternate-Mod
-fi
-while [ "1" = "1" ] ;
+
+while [ " " ] ;
 do
 	restart
 done
-exit 0
