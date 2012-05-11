@@ -6,18 +6,40 @@
 #Please keep credit intact if you plan on using the script elsewhere.
 #v1.0 - Initial Release
 #v1.1 - Added gapps option
+#v1.2 - Code & UI Cleanup, Modified how zips are handled to speed up script
 
 PATH="$PATH:$PWD/tools"
 export PATH
 DATE=`date +%d-%m-%y`
 
+spinner () {
+		SP_STRING=${2:-"'|/=\'"}
+		while [ -d /proc/$1 ]
+		do
+			printf "$SP_STRING"
+			sleep 1
+			SP_STRING=${SP_STRING#"${SP_STRING%?}"}${SP_STRING%?}
+		done
+}
+
 pb () {
 	ROM="rom-to-modify/*.zip"
 	if [ -e $ROM ] ; then
- 		mkdir tmp
-		mkdir tmp/rd
-		unzip $ROM -d tmp
+
+ 		clear
+		echo " "
+ 		echo -e "\e[1;31mPrepping ROM files for Primary-Mod. Please be patient!\e[0m"
+ 		cp $ROM Primary-Mod/PriMod_ROM_${DATE}.zip & sleep 5 &
+ 		spinner "$!" "."
+		
+		mkdir -p tmp/rd
+
+		unzip $ROM ramdisk.img -d tmp
+		unzip $ROM META-INF/com/google/android/updater-script -d tmp
+		unzip $ROM system/etc/vold.fstab -d tmp
+
 		cd tmp/rd
+
 		dd if=../ramdisk.img bs=64 skip=1 | gunzip -c | cpio -i
 
 		INIT=init.encore.rc
@@ -40,16 +62,21 @@ pb () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-		zip -r update_DualbootSD_primary_${DATE}.zip *	
-		mv update_DualbootSD_primary_${DATE}.zip ../Primary-Mod/update_DualbootSD_primary_${DATE}.zip
+		zip -r -u ../Primary-Mod/PriMod_ROM_${DATE}.zip
 
 		cd ..
 		rm -r tmp
+
+		clear
+		echo " "
+		echo -e "\e[1;33mPrepping ROM for Primary Boot Finished!\e[0m"
+		sleep 5
+		clear
 	else
 		clear
 		echo " "
 		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
-		sleep 3
+		sleep 5
 		clear
 	fi
 }
@@ -57,10 +84,21 @@ pb () {
 ab () {
 	ROM="rom-to-modify/*.zip"
 	if [ -e $ROM ] ; then
- 		mkdir tmp
-		mkdir tmp/rd
-		unzip $ROM -d tmp
+
+ 		clear
+		echo " "
+ 		echo -e "\e[1;31mPrepping ROM files for Alternate-Mod. Please be patient!\e[0m"
+ 		cp $ROM Alternate-Mod/AltMod_ROM_${DATE}.zip & sleep 5 &
+ 		spinner "$!" "."
+		
+		mkdir -p tmp/rd
+
+		unzip $ROM ramdisk.img -d tmp
+		unzip $ROM META-INF/com/google/android/updater-script -d tmp
+		unzip $ROM system/etc/vold.fstab -d tmp
+
 		cd tmp/rd
+
 		dd if=../ramdisk.img bs=64 skip=1 | gunzip -c | cpio -i
 
 		INIT=init.encore.rc
@@ -85,15 +123,21 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-		zip -r update_DualbootSD_alternate_${DATE}.zip *	
-		mv update_DualbootSD_alternate_${DATE}.zip ../Alternate-Mod/update_DualbootSD_alternate_${DATE}.zip
+		zip -r -u ../Alternate-Mod/AltMod_ROM_${DATE}.zip
+
 		cd ..
 		rm -r tmp
+
+		clear
+		echo " "
+		echo -e "\e[1;33mPrepping ROM for Alternate Boot Finished!\e[0m"
+		sleep 5
+		clear
 	else
 		clear
 		echo " "
 		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
-		sleep 3
+		sleep 5
 		clear
 	fi
 }
@@ -101,30 +145,37 @@ ab () {
 gp () {
 	GAPPS="gapps-to-modify/*.zip"
 	if [ -e $GAPPS ] ; then
+		
+		clear
+		echo " "
+ 		echo -e "\e[1;31mPrepping GAPPS files for Primary-Mod. Please be patient!\e[0m"
+ 		cp $GAPPS Primary-Mod/PriMod_Gapps_${DATE}.zip & sleep 5 &
+ 		spinner "$!" "."
+
 		mkdir tmp
-		unzip $GAPPS -d tmp
+		unzip $GAPPS META-INF/com/google/android/updater-script -d tmp
+		unzip $GAPPS install* -d tmp 2> /dev/null
+		
 		cd tmp
 		
-		INIT=META-INF/com/google/android/updater-script
-		sed -i 's,/system,/system1,g' $INIT
-		
-			if [ -e *-optional.sh ] ; then
-				INIT=install-optional.sh
-				sed -i 's,/system,/system1,g' $INIT
-			else
-				echo -e "\e[1;31minstall-optional.sh not found, skipping\e[0m"
-				sleep 2
-			fi
+		sed -i 's,/system,/system1,g' META-INF/com/google/android/updater-script 2> /dev/null
+		sed -i 's,/system,/system1,g' install* 2> /dev/null
 
-		zip -r gapps_DualbootSD_primary_${DATE}.zip *	
-		mv gapps_DualbootSD_primary_${DATE}.zip ../Primary-Mod/gapps_DualbootSD_primary_${DATE}.zip
+		zip -r -u ../Primary-Mod/PriMod_Gapps_${DATE}.zip
+
 		cd ..
-		rm -r tmp			
+		rm -r tmp
+
+		clear
+		echo " "
+		echo -e "\e[1;33mPrepping GAPPS for Primary Boot Finished!\e[0m"
+		sleep 5
+		clear		
 	else
 		clear
 		echo " "
 		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
-		sleep 3
+		sleep 5
 		clear
 	fi
 }
@@ -132,31 +183,37 @@ gp () {
 ga () {
 	GAPPS="gapps-to-modify/*.zip"
 	if [ -e $GAPPS ] ; then
+		
+		clear
+		echo " "
+ 		echo -e "\e[1;31mPrepping GAPPS files for Alternate-Mod. Please be patient!\e[0m"
+ 		cp $GAPPS Alternate-Mod/Alternate_Gapps_${DATE}.zip & sleep 5 &
+ 		spinner "$!" "."
+
 		mkdir tmp
-		unzip $GAPPS -d tmp
+		unzip $GAPPS META-INF/com/google/android/updater-script -d tmp
+		unzip $GAPPS install* -d tmp
+		
 		cd tmp
 		
-		INIT=META-INF/com/google/android/updater-script
-		sed -i 's,/system,/system2,g' $INIT
-		
-			if [ -e *-optional.sh ] ; then
-				INIT=install-optional.sh
-				sed -i 's,/system,/system2,g' $INIT
-			else
-				echo -e "\e[1;31minstall-optional.sh not found, skipping\e[0m"
-				sleep 2
-			fi
+		sed -i 's,/system,/system2,g' META-INF/com/google/android/updater-script 2> /dev/null
+		sed -i 's,/system,/system2,g' install* 2> /dev/null
 
-		zip -r gapps_DualbootSD_alternate_${DATE}.zip *	
-		mv gapps_DualbootSD_alternate_${DATE}.zip ../Primary-Mod/gapps_DualbootSD_alternate_${DATE}.zip
+		zip -r -u ../Alternate-Mod/Alternate_Gapps_${DATE}.zip
+
 		cd ..
 		rm -r tmp
-		rm -r /data/tmp			
+
+		clear
+		echo " "
+		echo -e "\e[1;33mPrepping GAPPS for Alternate Boot Finished!\e[0m"
+		sleep 5
+		clear		
 	else
 		clear
 		echo " "
 		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
-		sleep 3
+		sleep 5
 		clear
 	fi
 }
@@ -164,9 +221,9 @@ ga () {
 co () {
 	if [ " " ] ; then
 		clear
-		echoSleep() { echo "."; sleep 1;}
 		echo -e "\e[1;31mClearing out recent mods\e[0m"
-		echoSleep; echoSleep; echoSleep; echoSleep; echoSleep
+		sleep 5 &
+		spinner "$1" "."
 		rm -rf rom-to-modify
 		rm -rf gapps-to-modify
 		rm -rf Primary-Mod
@@ -175,8 +232,8 @@ co () {
 		mkdir gapps-to-modify
 		mkdir Primary-Mod
 		mkdir Alternate-Mod
+		clear
 	fi
-	clear
 }
 
 quit () {
@@ -193,12 +250,12 @@ restart () {
 	echo " "
 	echo -e "\e[1;32m--A tool to modify standard flashable ROM zips for Racks11479 DualbootSD--\e[0m"
 	echo " "
-	echo "  0    Prep for DualbootSD Primary Boot"
-	echo "  1    Prep for DualbootSD Alternate Boot"
-	echo "  2    Prep Gapps for DualbootSD Primary Boot"
-	echo "  3    Prep Gapps for DualbootSD Alternate Boot"
-	echo "  4    Clear out recent mods"
-	echo "  5    Quit"
+	echo "  1    Prep ROM for DualbootSD Primary Boot"
+	echo "  2    Prep ROM for DualbootSD Alternate Boot"
+	echo "  3    Prep Gapps for DualbootSD Primary Boot"
+	echo "  4    Prep Gapps for DualbootSD Alternate Boot"
+	echo "  5    Clear out recent mods"
+	echo "  0    Quit"
 	echo " "
 	echo "**************************************************************************"
 	echo 
@@ -206,16 +263,20 @@ restart () {
 	read ANSWER
 
 	case "$ANSWER" in
-		 0)   pb ;;
-		 1)   ab ;;
-		 2)   gp ;;
-		 3)   ga ;;
-		 4)   co ;;
-		 5) quit ;;
+		 1)   pb ;;
+		 2)   ab ;;
+		 3)   gp ;;
+		 4)   ga ;;
+		 5)   co ;;
+		 0) quit ;;
 		 *)
-			echo "Unknown command: '$ANSWER'"
+			echo " "
+			echo -e "\e[1;31mUnknown command: '$ANSWER' Please select from the list above.\e[0m"
+			echo " "
+			sleep 6
 		;;
 	esac
+	clear
 }
 
 clear
