@@ -148,10 +148,9 @@ ga () {
 			fi
 
 		zip -r gapps_DualbootSD_alternate_${DATE}.zip *	
-		mv gapps_DualbootSD_alternate_${DATE}.zip ../Primary-Mod/gapps_DualbootSD_alternate_${DATE}.zip
+		mv gapps_DualbootSD_alternate_${DATE}.zip ../Alternate-Mod/gapps_DualbootSD_alternate_${DATE}.zip
 		cd ..
 		rm -r tmp
-		rm -r /data/tmp			
 	else
 		clear
 		echo " "

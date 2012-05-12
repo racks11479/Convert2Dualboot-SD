@@ -41,9 +41,10 @@ mkdir tmp
 mkdir tmp\rd
 set PREPATH=%PATH%
 set PATH=%PATH%;.\tools;..\tools;..\..\tools
+mkdir pri-to-modify\gapps
 cls
-FOR /F %%R IN ('DIR/B/ON "pri-to-modify\update*.zip"') DO set ROM=%%R
-FOR /F %%R IN ('DIR/B/ON "pri-to-modify\cm*.zip"') DO set ROM=%%R
+FOR /F %%R IN ('DIR/B/ON "pri-to-modify\*gapps*.zip"') DO mv -f pri-to-modify/%%R pri-to-modify/gapps/%%R
+FOR /F %%R IN ('DIR/B/ON "pri-to-modify\*.zip"') DO set ROM=%%R
 unzip pri-to-modify/%ROM% ramdisk.img -d tmp
 unzip pri-to-modify/%ROM% META-INF/com/google/android/updater-script -d tmp
 unzip pri-to-modify/%ROM% system/etc/vold.fstab -d tmp
@@ -71,9 +72,11 @@ sed -i "s,/system,/system1,g" META-INF/com/google/android/updater-script
 sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 cp -f ../pri-to-modify/%ROM% ../pri-to-modify/update_RDBSD_pri_%ROM%
 zip -R -u ../pri-to-modify/update_RDBSD_pri_%ROM% *.*
-mv -f ../pri-to-modify/update_RDBSD_pri_%ROM% ../Primary-Mod/update_RDBSD_pri_%ROM%
 cd ..
+mv -f pri-to-modify/update_RDBSD_pri_%ROM% Primary-Mod
+mv -f pri-to-modify/gapps/*.zip pri-to-modify
 rm -r tmp
+rm -r pri-to-modify/gapps
 set PATH=%PREPATH%
 set PREPATH=
 echo.
@@ -86,9 +89,10 @@ mkdir tmp
 mkdir tmp\rd
 set PREPATH=%PATH%
 set PATH=%PATH%;.\tools;..\tools;..\..\tools
+mkdir alt-to-modify\gapps
 cls
-FOR /F %%R IN ('DIR/B/ON "alt-to-modify\update*.zip"') DO set ROM=%%R
-FOR /F %%R IN ('DIR/B/ON "alt-to-modify\cm*.zip"') DO set ROM=%%R
+FOR /F %%R IN ('DIR/B/ON "alt-to-modify\*gapps*.zip"') DO mv -f alt-to-modify/%%R alt-to-modify/gapps/%%R
+FOR /F %%R IN ('DIR/B/ON "alt-to-modify\*.zip"') DO set ROM=%%R
 unzip alt-to-modify/%ROM% ramdisk.img -d tmp
 unzip alt-to-modify/%ROM% META-INF/com/google/android/updater-script -d tmp
 unzip alt-to-modify/%ROM% system/etc/vold.fstab -d tmp
@@ -118,9 +122,11 @@ sed -i "s/uRamdisk/uAltRam/"  META-INF/com/google/android/updater-script
 sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 cp -f ../alt-to-modify/%ROM% ../alt-to-modify/update_RDBSD_alt_%ROM%
 zip -R -u ../alt-to-modify/update_RDBSD_alt_%ROM% *.*
-mv -f ../alt-to-modify/update_RDBSD_alt_%ROM% ../alternate-Mod/update_RDBSD_alt_%ROM%
 cd ..
+mv -f alt-to-modify/update_RDBSD_alt_%ROM% Alternate-Mod
+mv -f alt-to-modify/gapps/*.zip alt-to-modify
 rm -r tmp
+rm -r alt-to-modify/gapps
 set PATH=%PREPATH%
 set PREPATH=
 echo.
