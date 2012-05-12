@@ -153,8 +153,8 @@ mkdir tmp
 set PREPATH=%PATH%
 set PATH=%PATH%;.\tools;..\tools;..\..\tools
 cls
-FOR /F %%R IN ('DIR/B/ON "pri-to-modify\gapps*.zip"') DO set GAPPS=%%R
-If NOT exist pri-to-modify\%GAPPS% (
+If exist pri-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "pri-to-modify\*gapps*.zip"') DO set GAPPS=%%R
+If NOT exist pri-to-modify\*gapp*.zip (
 	cls
 	echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.
 	echo ***** GApps file not found *****
@@ -186,15 +186,15 @@ mkdir tmp
 set PREPATH=%PATH%
 set PATH=%PATH%;.\tools;..\tools;..\..\tools
 cls
-FOR /F %%R IN ('DIR/B/ON "alt-to-modify\gapps*.zip"') DO set GAPPS=%%R
-If NOT exist alt-to-modify\%GAPPS% (
+If exist alt-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "alt-to-modify\*gapps*.zip"') DO set GAPPS=%%R
+If NOT exist alt-to-modify\*gapp*.zip (
 	cls
 	echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.
 	echo ***** GApps file not found *****
 	sleep 10s
 	) Else (
-	unzip oq alt-to-modify/%GAPPS% META-INF/com/google/android/updater-script -d tmp
-	unzip oq alt-to-modify/%GAPPS% install-optional.sh -d tmp
+	unzip -oq alt-to-modify/%GAPPS% META-INF/com/google/android/updater-script -d tmp
+	unzip -oq alt-to-modify/%GAPPS% install-optional.sh -d tmp
 	
 	cd tmp
 	
@@ -203,7 +203,7 @@ If NOT exist alt-to-modify\%GAPPS% (
 	
 	cp -f ../alt-to-modify/%GAPPS% ../alt-to-modify/gapps_RDBSD_alt_%GAPPS%
 	zip -ruq ../alt-to-modify/gapps_RDBSD_alt_%GAPPS% *.*
-	mv -f ../alt-to-modify/gapps_RDBSD_alt_%GAPPS% ../alternate-Mod/gapps_RDBSD_alt_%GAPPS%
+	mv -f ../alt-to-modify/gapps_RDBSD_alt_%GAPPS% ../Alternate-Mod/gapps_RDBSD_alt_%GAPPS%
 	cd ..
 	)
 rm -fr tmp
@@ -220,16 +220,19 @@ set PATH=%PATH%;.\tools;..\tools;..\..\tools
 cls
 echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.
 echo Clearing out recent mods
-sleep 3s
 if exist tmp\nul rmdir /S /Q tmp
 if exist pri-to-modify\nul rmdir /S /Q pri-to-modify
 if exist alt-to-modify\nul rmdir /S /Q alt-to-modify
 if exist Primary-Mod\nul rmdir /S /Q Primary-Mod
 if exist Alternate-Mod\nul rmdir /S /Q Alternate-Mod
 if not exist pri-to-modify\nul mkdir pri-to-modify
+sleep 1s
 if not exist alt-to-modify\nul mkdir alt-to-modify
+sleep 1s
 if not exist Primary-Mod\nul mkdir Primary-Mod
+sleep 1s
 if not exist Alternate-Mod\nul mkdir Alternate-Mod
+sleep 1s
 set PATH=%PREPATH%
 set PREPATH=
 echo.
