@@ -196,6 +196,20 @@ ga () {
 		
 		cd tmp
 		
+<<<<<<< HEAD
+			if [ -e *-optional.sh ] ; then
+				INIT=install-optional.sh
+				sed -i 's,/system,/system2,g' $INIT
+			else
+				echo -e "\e[1;31minstall-optional.sh not found, skipping\e[0m"
+				sleep 2
+			fi
+
+		zip -r gapps_DualbootSD_alternate_${DATE}.zip *	
+		mv gapps_DualbootSD_alternate_${DATE}.zip ../Alternate-Mod/gapps_DualbootSD_alternate_${DATE}.zip
+		cd ..
+		rm -r tmp
+=======
 		sed -i 's,/system,/system2,g' META-INF/com/google/android/updater-script 2> /dev/null
 		sed -i 's,/system,/system2,g' install* 2> /dev/null
 
@@ -209,6 +223,7 @@ ga () {
 		echo -e "\e[1;33mPrepping GAPPS for Alternate Boot Finished!\e[0m"
 		sleep 5
 		clear		
+>>>>>>> upstream/master
 	else
 		clear
 		echo " "
