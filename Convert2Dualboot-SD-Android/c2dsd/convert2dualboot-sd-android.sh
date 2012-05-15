@@ -8,7 +8,7 @@
 #v1.1 - Added gapps option
 #v1.2 - Code & UI Cleanup, Added "ROM & GAPPS" option. Modified how zips are handled to speed up script. Restructured layout.
 
-DATE=`date +%d-%m-%y`
+DATE=`date +%Y%m%d`
 BIN="/sdcard/c2dsd/tools/bin"
 TMP="/sdcard/c2dsd/tools/tmp"
 C2DSD="/sdcard/c2dsd"
