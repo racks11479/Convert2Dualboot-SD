@@ -14,24 +14,28 @@ echo ********************* Convert2Dualboot-SD for DOS **********************
 echo.
 echo  A tool to modify standard flashable ROM zips for Racks11479 DualbootSD
 echo.
-echo   1    Prep for DualbootSD Primary Boot
-echo   2    Prep for DualbootSD Alternate Boot
-echo   3    Prep Gapps for DualbootSD Primary Boot
-echo   4    Prep Gapps for DualbootSD Alternate Boot
-echo   5    Clear out recent mods
+echo   1    Prep "Boot & Gapps" for DualbootSD Primary
+echo   2    Prep "Boot & Gapps" for DualbootSD Alternate
+echo   3    Prep Boot for DualbootSD Primary
+echo   4    Prep Boot for DualbootSD Alternate
+echo   5    Prep Gapps for DualbootSD Primary Boot
+echo   6    Prep Gapps for DualbootSD Alternate Boot
+echo   7    Clear out recent mods
 echo   0    Quit
 echo.
 echo ********************* Convert2Dualboot-SD for DOS **********************
 echo.
 echo Please make your decision: 
-choice /C 123450 /N 
+choice /C 12345670 /N 
 
-If Errorlevel 6 GoTo :Exit
-If Errorlevel 5 GoTo :co
-If Errorlevel 4 GoTo :ga
-If Errorlevel 3 GoTo :gp
-If Errorlevel 2 GoTo :ab
-If ERRORLEVEL 1 GoTo :pb
+If Errorlevel 8 GoTo :Exit
+If Errorlevel 7 GoTo :co
+If Errorlevel 6 GoTo :ga
+If Errorlevel 5 GoTo :gp
+If Errorlevel 4 GoTo :ab
+If ERRORLEVEL 3 GoTo :pb
+If ERRORLEVEL 2 Call :Both&GoTo :ab
+If ERRORLEVEL 1 Call :Both&GoTo :pb
 If Errorlevel 0 GoTo :Exit
 
 
@@ -40,7 +44,7 @@ If Errorlevel 0 GoTo :Exit
 mkdir tmp
 mkdir tmp\rd
 set PREPATH=%PATH%
-set PATH=%PATH%;.\tools;..\tools;..\..\tools
+set PATH=.\tools;..\tools;..\..\tools;%PATH%
 cls
 if exist pri-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "pri-to-modify\*gapps*.zip"') DO mv -f pri-to-modify/%%R tmp/%%R >nul
 if exist pri-to-modify\*.zip FOR /F %%R IN ('DIR/B/ON pri-to-modify\*.zip') DO set ROM=%%R
@@ -85,6 +89,7 @@ rm -fr tmp
 set PATH=%PREPATH%
 set PREPATH=
 echo.
+If defined Both GoTo :gp
 goto :menu
 
 
@@ -93,7 +98,7 @@ goto :menu
 mkdir tmp
 mkdir tmp\rd
 set PREPATH=%PATH%
-set PATH=%PATH%;.\tools;..\tools;..\..\tools
+set PATH=.\tools;..\tools;..\..\tools;%PATH%
 cls
 if exist alt-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "alt-to-modify\*gapps*.zip"') DO mv -f alt-to-modify/%%R tmp/%%R >nul
 if exist alt-to-modify\*.zip FOR /F %%R IN ('DIR/B/ON alt-to-modify\*.zip') DO set ROM=%%R
@@ -140,14 +145,16 @@ rm -fr tmp
 set PATH=%PREPATH%
 set PREPATH=
 echo.
+If defined Both GoTo :ga
 goto :menu
 
 
 ::#Modify Gapps for Primary Boot
 :gp
+if defined Both set Both=
 mkdir tmp
 set PREPATH=%PATH%
-set PATH=%PATH%;.\tools;..\tools;..\..\tools
+set PATH=.\tools;..\tools;..\..\tools;%PATH%
 cls
 If exist pri-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "pri-to-modify\*gapps*.zip"') DO set GAPPS=%%R
 If NOT exist pri-to-modify\*gapp*.zip (
@@ -178,9 +185,10 @@ goto :menu
 
 ::#Modify Gapps for Alternate Boot
 :ga
+if defined Both set Both=
 mkdir tmp
 set PREPATH=%PATH%
-set PATH=%PATH%;.\tools;..\tools;..\..\tools
+set PATH=.\tools;..\tools;..\..\tools;%PATH%
 cls
 If exist alt-to-modify\*gapp*.zip FOR /F %%R IN ('DIR/B/ON "alt-to-modify\*gapps*.zip"') DO set GAPPS=%%R
 If NOT exist alt-to-modify\*gapp*.zip (
@@ -212,7 +220,7 @@ goto :menu
 ::#Clear out and reiniate all working folders
 :co
 set PREPATH=%PATH%
-set PATH=%PATH%;.\tools;..\tools;..\..\tools
+set PATH=.\tools;..\tools;..\..\tools;%PATH%
 cls
 echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.
 echo Clearing out recent mods
@@ -244,3 +252,6 @@ cls
 echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.&echo.
 echo Thank you for using Convert2Dualboot-SD!
 tools\sleep 5s
+
+:Both
+Set Both=Y
