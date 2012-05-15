@@ -6,7 +6,7 @@
 #Please keep credit intact if you plan on using the script elsewhere.
 #v1.0 - Initial Release
 #v1.1 - Added gapps option
-#v1.2 - Code & UI Cleanup, Modified how zips are handled to speed up script
+#v1.2 - Code & UI Cleanup, Added "ROM & GAPPS" option. Modified how zips are handled to speed up script. Restructured layout.
 
 DATE=`date +%d-%m-%y`
 BIN="/sdcard/c2dsd/tools/bin"
@@ -24,14 +24,22 @@ spinner () {
 }
 
 pb () {
-	ROM="rom-to-modify/*.zip"
+	ROM="modify-for-pri/*.zip"
+	GAPPS="modify-for-pri/*gapps*"
+	GTMP="tmp/*gapps*"
+
+	if [ -e $GAPPS ] ; then
+		mkdir tmp
+		mv $GAPPS tmp/
+	fi	
+
 	if [ -e $ROM ] ; then
-	
+		export FILE=`ls modify-for-pri |grep zip`
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
 		
  		clear
  		echo -e "\e[1;31mPrepping ROM files for Primary-Mod. Please be patient!\e[0m"
- 		cp $ROM Primary-Mod/PriMod_ROM_${DATE}.zip &
+ 		cp $ROM Primary-Mod/RDBSD_Pri_${DATE}_$FILE &
  		spinner "$!" "."
  		
 		$BIN/busybox unzip $ROM ramdisk.img -d $TMP
@@ -62,36 +70,48 @@ pb () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 		
-		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/PriMod_ROM_${DATE}.zip
+		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/RDBSD_Pri_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD
+
+		if [ -e $GTMP ] ; then
+		mv $GTMP modify-for-pri/
+		rm -r tmp
+		fi
 		
 		busybox umount tools
-		
-		clear
+				
 		echo " "
 		echo -e "\e[1;33mPrepping ROM for Primary Boot Finished!\e[0m"
 		sleep 3
-		clear
+		
 	else
 		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file in modify-for-pri!\e[0m"
 		sleep 3
 		clear
-	fi
+	fi	
 }
 
 ab () {
-	ROM="rom-to-modify/*.zip"
+	ROM="modify-for-alt/*.zip"
+	GAPPS="modify-for-alt/*gapps*"
+	GTMP="tmp/*gapps*"
+
+	if [ -e $GAPPS ] ; then
+		mkdir tmp
+		mv $GAPPS tmp/
+	fi	
+
 	if [ -e $ROM ] ; then
-	
+		export FILE=`ls modify-for-alt |grep zip`
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
 		
  		clear
  		echo -e "\e[1;31mPrepping ROM files for Alternate-Mod. Please be patient!\e[0m"
- 		cp $ROM Alternate-Mod/AltMod_ROM_${DATE}.zip &
+ 		cp $ROM Alternate-Mod/RDBSD_Alt_${DATE}_$FILE &
  		spinner "$!" "."
  		
 		$BIN/busybox unzip $ROM ramdisk.img -d $TMP
@@ -124,29 +144,34 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 		
-		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/AltMod_ROM_${DATE}.zip
+		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD
+
+		if [ -e $GTMP ] ; then
+		mv $GTMP modify-for-alt/
+		rm -r tmp
+		fi
 		
 		busybox umount tools
-		
-		clear
+				
 		echo " "
 		echo -e "\e[1;33mPrepping ROM for Alternate Boot Finished!\e[0m"
 		sleep 3
-		clear
+		
 	else
 		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file\e[0m"
+		echo -e "\e[1;31mWarning: cannot find a valid ROM .zip file in modify-for-alt!\e[0m"
 		sleep 3
 		clear
-	fi
+	fi	
 }
 
 gp () {
-	GAPPS="gapps-to-modify/*.zip"
+	GAPPS="modify-for-pri/*gapps*"
+	export FILE=`ls modify-for-pri |grep gapps`
 	if [ -f $GAPPS ] ; then
 
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
@@ -154,7 +179,7 @@ gp () {
 		clear
 		echo " "
  		echo -e "\e[1;31mPrepping GAPPS files for Primary-Mod. Please be patient!\e[0m"
- 		cp $GAPPS Primary-Mod/PriMod_Gapps_${DATE}.zip &
+ 		cp $GAPPS Primary-Mod/RDBSD_Pri_${DATE}_$FILE &
  		spinner "$!" "."
  		
 		$BIN/busybox unzip $GAPPS META-INF/com/google/android/updater-script -d $TMP
@@ -165,7 +190,7 @@ gp () {
 		sed -i 's,/system,/system1,g' META-INF/com/google/android/updater-script 2> /dev/null
 		sed -i 's,/system,/system1,g' install* 2> /dev/null
 
-		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/PriMod_Gapps_${DATE}.zip
+		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/RDBSD_Pri_${DATE}_$FILE
 		
 		rm -r $TMP/*
 		cd $C2DSD
@@ -180,15 +205,15 @@ gp () {
 	else
 		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
+		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file in modify-for-pri!\e[0m"
 		sleep 3
 		clear
 	fi
-	done
 }
 
 ga () {
-	GAPPS="gapps-to-modify/*.zip"
+	GAPPS="modify-for-alt/*gapps*"
+	export FILE=`ls modify-for-alt |grep gapps`
 	if [ -f $GAPPS ] ; then
 
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
@@ -196,7 +221,7 @@ ga () {
 		clear
 		echo " "
  		echo -e "\e[1;31mPrepping GAPPS files for Alternate-Mod. Please be patient!\e[0m"
- 		cp $GAPPS Alternate-Mod/AltMod_Gapps_${DATE}.zip &
+ 		cp $GAPPS Alternate-Mod/RDBSD_Alt_${DATE}_$FILE &
  		spinner "$!" "."
  		
 		$BIN/busybox unzip $GAPPS META-INF/com/google/android/updater-script -d $TMP
@@ -207,7 +232,7 @@ ga () {
 		sed -i 's,/system,/system2,g' META-INF/com/google/android/updater-script 2> /dev/null
 		sed -i 's,/system,/system2,g' install* 2> /dev/null
 
-		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/AltMod_Gapps_${DATE}.zip
+		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
 		
 		rm -r $TMP/*
 		cd $C2DSD
@@ -222,11 +247,19 @@ ga () {
 	else
 		clear
 		echo " "
-		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file\e[0m"
+		echo -e "\e[1;31mWarning: cannot find a valid gapps .zip file in modify-for-alt!\e[0m"
 		sleep 3
 		clear
 	fi
-	done
+}
+prg () {
+	pb
+	gp
+}
+
+arg () {
+	ab
+	ga
 }
 
 co () {
@@ -236,12 +269,12 @@ co () {
 		echo -e "\e[1;31mClearing out recent mods\e[0m"
 		sleep 5 &
 		spinner "$1" "."
-		rm -rf rom-to-modify
-		rm -rf gapps-to-modify
+		rm -rf modify-for-pri
+		rm -rf modify-for-alt
 		rm -rf Primary-Mod
 		rm -rf Alternate-Mod
-		mkdir rom-to-modify
-		mkdir gapps-to-modify
+		mkdir modify-for-pri
+		mkdir modify-for-alt
 		mkdir Primary-Mod
 		mkdir Alternate-Mod
 		clear
@@ -264,9 +297,11 @@ restart () {
 	echo " "
 	echo "  1    Prep ROM for DualbootSD Primary Boot"
 	echo "  2    Prep ROM for DualbootSD Alternate Boot"
-	echo "  3    Prep Gapps for DualbootSD Primary Boot"
-	echo "  4    Prep Gapps for DualbootSD Alternate Boot"
-	echo "  5    Clear out recent mods"
+	echo "  3    Prep GAPPS for DualbootSD Primary Boot"
+	echo "  4    Prep GAPPS for DualbootSD Alternate Boot"
+	echo "  5    Prep ROM & GAPPS for DualbootSD Primary Boot"
+	echo "  6    Prep ROM & GAPPS for DualbootSD Alternate Boot"
+	echo "  7    Clear out recent mods"
 	echo "  0    Quit"
 	echo " "
 	echo "**************************************************************************"
@@ -279,7 +314,9 @@ restart () {
 		 2)   ab ;;
 		 3)   gp ;;
 		 4)   ga ;;
-		 5)   co ;;
+		 5)  prg ;;
+		 6)  arg ;;
+		 7)   co ;;
 		 0) quit ;;
 		 *)
 			echo " "
