@@ -38,6 +38,7 @@ pb () {
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
 		
  		clear
+		echo " "
  		echo -e "\e[1;31mPrepping ROM files for Primary-Mod. Please be patient!\e[0m"
  		cp $ROM Primary-Mod/RDBSD_Pri_${DATE}_$FILE &
  		spinner "$!" "."
@@ -110,6 +111,7 @@ ab () {
 		busybox mount -o loop,rw $C2DSD/tools.img $C2DSD/tools
 		
  		clear
+		echo " "
  		echo -e "\e[1;31mPrepping ROM files for Alternate-Mod. Please be patient!\e[0m"
  		cp $ROM Alternate-Mod/RDBSD_Alt_${DATE}_$FILE &
  		spinner "$!" "."
