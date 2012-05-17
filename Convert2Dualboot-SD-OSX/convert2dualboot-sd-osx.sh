@@ -234,8 +234,8 @@ ga () {
 		
 		cd tmp
 		
-		sed -i 's,/system,/system1,g' META-INF/com/google/android/updater-script 2> /dev/null
-		sed -i 's,/system,/system1,g' install* 2> /dev/null
+		sed -i 's,/system,/system2,g' META-INF/com/google/android/updater-script 2> /dev/null
+		sed -i 's,/system,/system2,g' install* 2> /dev/null
 
 		zip -r -u ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
 

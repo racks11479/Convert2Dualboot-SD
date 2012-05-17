@@ -116,8 +116,8 @@ If NOT exist modify-for-alt\*.zip (
 	dd if=../ramdisk.img bs=64 skip=1 of=ramdisk > nul
 	gunzip -c ramdisk | cpio -i > nul
 	rm -r ramdisk > nul
-	sed -i s/mmcblk0p5/mmcblk1p2/ init.encore.rc
-	sed -i s/mmcblk0p6/mmcblk1p3/ init.encore.rc
+	sed -i s/mmcblk0p5/mmcblk1p5/ init.encore.rc
+	sed -i s/mmcblk0p6/mmcblk1p6/ init.encore.rc
 	cd ..
 	rm ramdisk.img > nul
 	mkbootfs rd | gzip -9 > nuRamdisk-new.gz
