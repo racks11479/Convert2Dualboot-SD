@@ -8,6 +8,8 @@
 #v1.1 - Added gapps option
 #v1.2 - Code & UI Cleanup, Added "ROM & GAPPS" option. Modified how zips are handled to speed up script. Restructured layout.
 
+LIB="/sdcard/c2dsd/tools/lib"
+export LD_LIBRARY_PATH=$LIB:${LD_LIBRARY_PATH}
 DATE=`date +%Y%m%d`
 BIN="/sdcard/c2dsd/tools/bin"
 TMP="/sdcard/c2dsd/tools/tmp"
