@@ -73,18 +73,8 @@ pb () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-<<<<<<< HEAD
 		if [ -e ../$GTMP ] ; then
 		mv ../$GTMP ../modify-for-pri/
-=======
-<<<<<<< HEAD
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-pri/
-=======
-		if [ -e $GTMP ] ; then
-		mv $GTMP ../modify-for-pri/
->>>>>>> origin/HEAD
->>>>>>> 719d60811231d5c9b8d90e9a3ea5deb8bbc686c9
 		fi
 
 		zip -r -u ../Primary-Mod/RDBSD_Pri_${DATE}_$FILE
@@ -160,18 +150,8 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-<<<<<<< HEAD
 		if [ -e ../$GTMP ] ; then
 		mv ../$GTMP ../modify-for-alt/
-=======
-<<<<<<< HEAD
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-alt/
-=======
-		if [ -e $GTMP ] ; then
-		mv $GTMP ../modify-for-alt/
->>>>>>> origin/HEAD
->>>>>>> 719d60811231d5c9b8d90e9a3ea5deb8bbc686c9
 		fi
 
 		zip -r -u ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
