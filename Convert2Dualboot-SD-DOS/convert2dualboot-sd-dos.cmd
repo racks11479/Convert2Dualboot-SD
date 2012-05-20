@@ -81,7 +81,11 @@ If NOT exist modify-for-pri\*.zip (
 	
 	sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 	cp -f ../modify-for-pri/%ROM% ../modify-for-pri/RDBSD_Pri_%ROM% > nul
+<<<<<<< HEAD
 	if exist *gapps*.zip mv -f *gapps*.zip ../modify-for-pri > nul
+=======
+	if exist tmp\*gapps*.zip mv -f tmp/*gapps*.zip ../modify-for-pri > nul
+>>>>>>> origin/HEAD
 	zip -ruq ../modify-for-pri/RDBSD_Pri_%ROM% *.*
 	cd ..
 	mv -f modify-for-pri/RDBSD_Pri_%ROM% Primary-Mod > nul
@@ -137,7 +141,11 @@ If NOT exist modify-for-alt\*.zip (
 	
 	sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 	cp -f ../modify-for-alt/%ROM% ../modify-for-alt/RDBSD_Alt_%ROM% > nul
+<<<<<<< HEAD
 	if exist *gapps*.zip mv -f *gapps*.zip ../modify-for-alt > nul
+=======
+	if exist tmp\*gapps*.zip mv -f tmp\*gapps*.zip modify-for-alt > nul
+>>>>>>> origin/HEAD
 	zip -ruq ../modify-for-alt/RDBSD_Alt_%ROM% *.*
 	cd ..
 	mv -f modify-for-alt/RDBSD_Alt_%ROM% Alternate-Mod > nul
