@@ -72,16 +72,17 @@ pb () {
 
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+
+		if [ -e ../$GTMP ] ; then
+		mv ../$GTMP ../modify-for-pri/
+		fi
 		
 		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/RDBSD_Pri_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD
 
-		if [ -e $GTMP ] ; then
-		mv $GTMP modify-for-pri/
 		rm -r tmp
-		fi
 		
 		busybox umount tools
 				
@@ -147,16 +148,17 @@ ab () {
 
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+
+		if [ -e ../$GTMP ] ; then
+		mv ../$GTMP ../modify-for-alt/
+		fi
 		
 		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD
 
-		if [ -e $GTMP ] ; then
-		mv $GTMP modify-for-alt/
 		rm -r tmp
-		fi
 		
 		busybox umount tools
 				
