@@ -55,9 +55,9 @@ If NOT exist modify-for-pri\*.zip (
 	echo ***** ROM file not found *****
 	sleep 10s
 	) Else (
-	unzip -oq modify-for-pri/%ROM% ramdisk.img -d tmp
-	unzip -oq modify-for-pri/%ROM% META-INF/com/google/android/updater-script -d tmp
-	unzip -oq modify-for-pri/%ROM% system/etc/vold.fstab -d tmp
+	7za x -otmp modify-for-pri/%ROM% ramdisk.img
+	7za x -otmp modify-for-pri/%ROM% META-INF/com/google/android/updater-script
+	7za x -otmp modify-for-pri/%ROM% system/etc/vold.fstab
 	cd tmp\rd
 	dd if=../ramdisk.img bs=64 skip=1 of=ramdisk > nul
 	gunzip -c ramdisk | cpio -i > nul
@@ -82,7 +82,7 @@ If NOT exist modify-for-pri\*.zip (
 	sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 	cp -f ../modify-for-pri/%ROM% ../modify-for-pri/RDBSD_Pri_%ROM% > nul
 	if exist *gapps*.zip mv -f *gapps*.zip ../modify-for-pri > nul
-	zip -ruq ../modify-for-pri/RDBSD_Pri_%ROM% *.*
+	7za u -ssc ../modify-for-pri/RDBSD_Pri_%ROM% *.*
 	cd ..
 	mv -f modify-for-pri/RDBSD_Pri_%ROM% Primary-Mod > nul
 	)
@@ -109,9 +109,9 @@ If NOT exist modify-for-alt\*.zip (
 	echo ***** ROM file not found *****
 	sleep 10s
 	) Else (
-	unzip -oq modify-for-alt/%ROM% ramdisk.img -d tmp
-	unzip -oq modify-for-alt/%ROM% META-INF/com/google/android/updater-script -d tmp
-	unzip -oq modify-for-alt/%ROM% system/etc/vold.fstab -d tmp
+	7za x -otmp modify-for-alt/%ROM% ramdisk.img
+	7za x -otmp modify-for-alt/%ROM% META-INF/com/google/android/updater-script
+	7za x -otmp modify-for-alt/%ROM% system/etc/vold.fstab
 	cd tmp\rd
 	dd if=../ramdisk.img bs=64 skip=1 of=ramdisk > nul
 	gunzip -c ramdisk | cpio -i > nul
@@ -138,7 +138,7 @@ If NOT exist modify-for-alt\*.zip (
 	sed -i "s/sdcard auto/sdcard 7/" system/etc/vold.fstab
 	cp -f ../modify-for-alt/%ROM% ../modify-for-alt/RDBSD_Alt_%ROM% > nul
 	if exist *gapps*.zip mv -f *gapps*.zip ../modify-for-alt > nul
-	zip -ruq ../modify-for-alt/RDBSD_Alt_%ROM% *.*
+	7za u -ssc ../modify-for-alt/RDBSD_Alt_%ROM% *.*
 	cd ..
 	mv -f modify-for-alt/RDBSD_Alt_%ROM% Alternate-Mod > nul
 	)
@@ -164,8 +164,8 @@ If NOT exist modify-for-pri\*gapp*.zip (
 	echo ***** GApps file not found *****
 	sleep 10s
 	) Else (
-	unzip -oq modify-for-pri/%GAPPS% META-INF/com/google/android/updater-script -d tmp
-	unzip -oq modify-for-pri/%GAPPS% install-optional.sh -d tmp
+	7za x -otmp modify-for-pri/%GAPPS% META-INF/com/google/android/updater-script
+	7za x -otmp modify-for-pri/%GAPPS% install-optional.sh
 	
 	cd tmp
 	
@@ -173,7 +173,7 @@ If NOT exist modify-for-pri\*gapp*.zip (
 	sed -i "s,/system,/system1,g" install-optional.sh
 	
 	cp -f ../modify-for-pri/%GAPPS% ../modify-for-pri/RDBSD_Pri_%GAPPS%
-	zip -ruq ../modify-for-pri/RDBSD_Pri_%GAPPS% *.*
+	7za u -ssc ../modify-for-pri/RDBSD_Pri_%GAPPS% *.*
 	mv -f ../modify-for-pri/RDBSD_Pri_%GAPPS% ../Primary-Mod/RDBSD_Pri_%GAPPS%
 	cd ..
 	)
@@ -198,8 +198,8 @@ If NOT exist modify-for-alt\*gapp*.zip (
 	echo ***** GApps file not found *****
 	sleep 10s
 	) Else (
-	unzip -oq modify-for-alt/%GAPPS% META-INF/com/google/android/updater-script -d tmp
-	unzip -oq modify-for-alt/%GAPPS% install-optional.sh -d tmp
+	7za x -otmp modify-for-alt/%GAPPS% META-INF/com/google/android/updater-script
+	7za x -otmp modify-for-alt/%GAPPS% install-optional.sh
 	
 	cd tmp
 	
@@ -207,7 +207,7 @@ If NOT exist modify-for-alt\*gapp*.zip (
 	sed -i "s,/system,/system2,g" install-optional.sh
 	
 	cp -f ../modify-for-alt/%GAPPS% ../modify-for-alt/RDBSD_Alt_%GAPPS%
-	zip -ruq ../modify-for-alt/RDBSD_Alt_%GAPPS% *.*
+	7za u -ssc ../modify-for-alt/RDBSD_Alt_%GAPPS% *.*
 	mv -f ../modify-for-alt/RDBSD_Alt_%GAPPS% ../Alternate-Mod/RDBSD_Alt_%GAPPS%
 	cd ..
 	)
