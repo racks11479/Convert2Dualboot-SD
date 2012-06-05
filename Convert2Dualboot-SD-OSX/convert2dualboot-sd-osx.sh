@@ -25,11 +25,11 @@ spinner () {
 pb () {
 	ROM="modify-for-pri/*.zip"
 	GAPPS="modify-for-pri/*gapps*"
-	GTMP="tmp/*gapps*"
+	GTMP="gtmp/*gapps*"
 
 	if [ -e $GAPPS ] ; then
-		mkdir tmp
-		mv $GAPPS tmp/
+		mkdir gtmp
+		mv $GAPPS gtmp/
 	fi
 
 	if [ -e $ROM ] ; then
@@ -77,12 +77,12 @@ pb () {
 
 		cd ..
 
+		rm -r tmp
+
 		if [ -e $GTMP ] ; then
 		mv $GTMP modify-for-pri/
-		rm -r tmp
+		rm -r gtmp
 		fi
-
-		rm -r tmp
 
 		clear
 		echo " "
@@ -101,11 +101,11 @@ pb () {
 ab () {
 	ROM="modify-for-alt/*.zip"
 	GAPPS="modify-for-alt/*gapps*"
-	GTMP="tmp/*gapps*"
+	GTMP="gtmp/*gapps*"
 
 	if [ -e $GAPPS ] ; then
-		mkdir tmp
-		mv $GAPPS tmp/
+		mkdir gtmp
+		mv $GAPPS gtmp/
 	fi
 
 	if [ -e $ROM ] ; then
@@ -155,12 +155,12 @@ ab () {
 
 		cd ..
 
+		rm -r tmp
+
 		if [ -e $GTMP ] ; then
 		mv $GTMP modify-for-alt/
-		rm -r tmp
+		rm -r gtmp
 		fi
-
-		rm -r tmp
 
 		clear
 		echo " "
