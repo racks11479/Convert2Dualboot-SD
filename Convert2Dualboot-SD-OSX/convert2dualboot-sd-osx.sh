@@ -25,11 +25,11 @@ spinner () {
 pb () {
 	ROM="modify-for-pri/*.zip"
 	GAPPS="modify-for-pri/*gapps*"
-	GTMP="tmp/*gapps*"
+	GTMP="gtmp/*gapps*"
 
 	if [ -e $GAPPS ] ; then
-		mkdir tmp
-		mv $GAPPS tmp/
+		mkdir gtmp
+		mv $GAPPS gtmp/
 	fi
 
 	if [ -e $ROM ] ; then
@@ -83,6 +83,14 @@ pb () {
 
 		rm -r tmp
 
+<<<<<<< HEAD
+=======
+		if [ -e $GTMP ] ; then
+		mv $GTMP modify-for-pri/
+		rm -r gtmp
+		fi
+
+>>>>>>> upstream/master
 		clear
 		echo " "
 		echo "\e[1;32mPrepping ROM for Primary Boot Finished!\e[0m"
@@ -100,11 +108,11 @@ pb () {
 ab () {
 	ROM="modify-for-alt/*.zip"
 	GAPPS="modify-for-alt/*gapps*"
-	GTMP="tmp/*gapps*"
+	GTMP="gtmp/*gapps*"
 
 	if [ -e $GAPPS ] ; then
-		mkdir tmp
-		mv $GAPPS tmp/
+		mkdir gtmp
+		mv $GAPPS gtmp/
 	fi
 
 	if [ -e $ROM ] ; then
@@ -160,6 +168,14 @@ ab () {
 
 		rm -r tmp
 
+<<<<<<< HEAD
+=======
+		if [ -e $GTMP ] ; then
+		mv $GTMP modify-for-alt/
+		rm -r gtmp
+		fi
+
+>>>>>>> upstream/master
 		clear
 		echo " "
 		echo "\e[1;32mPrepping ROM for Alternate Boot Finished!\e[0m"
