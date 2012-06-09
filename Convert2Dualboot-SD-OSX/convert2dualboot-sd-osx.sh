@@ -44,6 +44,7 @@ pb () {
  		spinner "$!" "."
 		
 		mkdir -p tmp/rd
+		mkdir -p tmp/system/etc/init.d
 
 		unzip $ROM ramdisk.img -d tmp
 		unzip $ROM META-INF/com/google/android/updater-script -d tmp
@@ -71,9 +72,11 @@ pb () {
 		sed -i 's,/system,/system1,g' $INIT  
 
 		INIT=system/etc/vold.fstab
-		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+		sed -i 's/sdcard auto/sdcard 7/' $INIT
 
-		zip -r -u ../Primary-Mod/RDBSD_Pri_${DATE}_$FILE
+		cp -p ../tools/21pricachemount system/etc/init.d/ 
+
+		zip -ru ../Primary-Mod/RDBSD_Pri_${DATE}_$FILE *
 
 		cd ..
 
@@ -120,6 +123,7 @@ ab () {
  		spinner "$!" "."
 		
 		mkdir -p tmp/rd
+		mkdir -p tmp/system/etc/init.d
 
 		unzip $ROM ramdisk.img -d tmp
 		unzip $ROM META-INF/com/google/android/updater-script -d tmp
@@ -151,7 +155,9 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-		zip -r -u ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
+		cp -p ../tools/21altcachemount system/etc/init.d/
+
+		zip -ru ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE *
 
 		cd ..
 
