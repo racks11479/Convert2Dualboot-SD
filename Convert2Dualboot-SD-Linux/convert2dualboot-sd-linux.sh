@@ -44,6 +44,7 @@ pb () {
  		spinner "$!" "."
 		
 		mkdir -p tmp/rd
+		mkdir -p tmp/system/etc/init.d
 
 		unzip $ROM ramdisk.img -d tmp
 		unzip $ROM META-INF/com/google/android/updater-script -d tmp
@@ -72,12 +73,11 @@ pb () {
 
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+		
+		cp -p ../tools/21pricachemount system/etc/init.d/
 
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-pri/
-		fi
+		zip -ru ../Primary-Mod/RDBSD_Pri_${DATE}_$FILE *
 
-		zip -r -u ../Primary-Mod/RDBSD_Pri_${DATE}_$FILE
 
 		cd ..
 
@@ -127,6 +127,7 @@ ab () {
  		spinner "$!" "."
 		
 		mkdir -p tmp/rd
+		mkdir -p tmp/system/etc/init.d
 
 		unzip $ROM ramdisk.img -d tmp
 		unzip $ROM META-INF/com/google/android/updater-script -d tmp
@@ -158,11 +159,41 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-alt/
-		fi
 
-		zip -r -u ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
+		unzip $ROM ramdisk.img -d tmp
+		unzip $ROM META-INF/com/google/android/updater-script -d tmp
+		unzip $ROM system/etc/vold.fstab -d tmp
+
+		cd tmp/rd
+
+		dd if=../ramdisk.img bs=64 skip=1 | gunzip -c | cpio -i
+
+		INIT=init.encore.rc
+		sed -i 's/mmcblk0p5/mmcblk1p5/' $INIT 
+		sed -i 's/mmcblk0p6/mmcblk1p6/' $INIT
+
+		cd ..
+
+		rm ramdisk.img
+		mkbootfs rd | gzip > nuRamdisk-new.gz
+		mkimage -A ARM -T RAMDisk -n Image -d nuRamdisk-new.gz ramdisk.img
+		rm -r rd
+		rm nuRamdisk-new.gz
+
+		INIT=META-INF/com/google/android/updater-script
+		sed -i 's/mmcblk0p5/mmcblk1p5/' $INIT
+		sed -i 's/mmcblk0p1/mmcblk1p1/' $INIT
+		sed -i 's,/system,/system2,g' $INIT
+		sed -i 's/uImage/uAltImg/' $INIT
+		sed -i 's/uRamdisk/uAltRam/' $INIT
+
+		INIT=system/etc/vold.fstab
+		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+
+		cp -p ../tools/21altcachemount system/etc/init.d/
+
+		zip -ru ../Alternate-Mod/RDBSD_Alt_${DATE}_$FILE *
+
 
 		cd ..
 

@@ -44,6 +44,8 @@ pb () {
  		echo -e "\e[1;31mPrepping ROM files for Primary-Mod. Please be patient!\e[0m"
  		cp $ROM Primary-Mod/RDBSD_Pri_${DATE}_$FILE &
  		spinner "$!" "."
+
+		mkdir -p $TMP/system/etc/init.d
  		
 		$BIN/busybox unzip $ROM ramdisk.img -d $TMP
 		$BIN/busybox unzip $ROM META-INF/com/google/android/updater-script -d $TMP
@@ -71,13 +73,9 @@ pb () {
 		sed -i 's,/system,/system1,g' $INIT  
 
 		INIT=system/etc/vold.fstab
-		sed -i 's/sdcard auto/sdcard 7/' $INIT 
+		sed -i 's/sdcard auto/sdcard 7/' $INIT
 
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-pri/
-		fi
 		
-		$BIN/zip -r -u /sdcard/c2dsd/Primary-Mod/RDBSD_Pri_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD
@@ -118,6 +116,8 @@ ab () {
  		echo -e "\e[1;31mPrepping ROM files for Alternate-Mod. Please be patient!\e[0m"
  		cp $ROM Alternate-Mod/RDBSD_Alt_${DATE}_$FILE &
  		spinner "$!" "."
+
+		mkdir -p $TMP/system/etc/init.d
  		
 		$BIN/busybox unzip $ROM ramdisk.img -d $TMP
 		$BIN/busybox unzip $ROM META-INF/com/google/android/updater-script -d $TMP
@@ -149,11 +149,7 @@ ab () {
 		INIT=system/etc/vold.fstab
 		sed -i 's/sdcard auto/sdcard 7/' $INIT 
 
-		if [ -e ../$GTMP ] ; then
-		mv ../$GTMP ../modify-for-alt/
-		fi
 		
-		$BIN/zip -r -u /sdcard/c2dsd/Alternate-Mod/RDBSD_Alt_${DATE}_$FILE
 
 		rm -r $TMP/*
 		cd $C2DSD

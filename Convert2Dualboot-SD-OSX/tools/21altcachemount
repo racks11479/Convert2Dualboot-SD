@@ -1,0 +1,56 @@
+#!/system/bin/sh
+
+#Create seperate alternate boot cache partition using loop mount images for racks dualbootsd
+
+#create separate mount point for /sdcache
+MNTPARAM=dirsync,nosuid,nodev,noexec,relatime,uid=1000,gid=1015,fmask=0702,dmask=0702
+	busybox mount -o remount,rw rootfs /
+	mkdir -p /mnt/sdcache
+	chown system sdcard /mnt/sdcache
+	busybox mount -t vfat -o rw,$MNTPARAM /dev/block/mmcblk1p7 /mnt/sdcache
+	busybox mount -o remount,ro rootfs /
+
+#determine which make ext4 binary is available
+CM7EXT4=/system/bin/mke2fs
+CM9EXT4=/system/bin/make_ext4fs
+
+#check to see if cache .img exist, if not then create it
+ALTCACHE=/mnt/sdcache/alt-cache.img
+
+    if ! [ -e $ALTCACHE ] ; then
+
+      dd if=/dev/zero of=$ALTCACHE bs=1024 count=1 seek=100000
+    	if [ -e $CM7EXT4 ] ; then
+    	$CM7EXT4 -F -T ext4 $ALTCACHE
+    		else
+    		$CM9EXT4 $ALTCACHE
+    	fi
+    fi
+
+#create loop device node for cache
+    mknod -m640 /dev/block/loop99 b 7 99
+
+#setup loop mount for cache img from sdcard
+    losetup /dev/block/loop99 $ALTCACHE
+    sleep 5
+    busybox mount -t ext4 -o rw,nosuid,nodev,noatime,barrier=1 /dev/block/loop99 /cache
+    chown system cache /cache
+    chmod 0771 /cache
+
+    mkdir -p /cache/download
+    chown system cache /cache/download
+    chmod 0777 /cache/download
+
+    mkdir -p /cache/recovery
+    chown system cache /cache/recovery
+    chmod 0770 /cache/recovery
+
+    chmod 0770 /cache/lost+found
+
+    busybox mount -o remount,rw /system
+    mkdir -p /cache/dalvik-cache
+    chown system system /cache/dalvik-cache
+    chmod 0771 /cache/dalvik-cache
+    busybox mount -o remount,ro /system
+
+    
